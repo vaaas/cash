@@ -107,10 +107,14 @@ cash.user() {
 }
 
 cash.pkg() {
-	if test -z "$1"
+	if test "$#" -eq 0
 	then
-		echo 'Please provide a group name'
+		echo 'Please provide packages'
 		return 1
 	fi
-	dpkg -l $1 || apt install $1
+	while test "$#" -gt 0
+	do
+		dpkg -l "$1" || apt install "$1"
+		shift 1
+	done
 }

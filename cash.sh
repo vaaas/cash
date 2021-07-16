@@ -114,7 +114,56 @@ cash.pkg() {
 	fi
 	while test "$#" -gt 0
 	do
-		dpkg -l "$1" || apt install "$1"
+		dpkg -s "$1" | grep 'installed' || apt install "$1"
 		shift 1
 	done
+}
+
+cash.mariadb.user() {
+	while test "$#" -gt 0
+	do
+		case "$1" in
+			-name) name="$2" ; shift 2 ;;
+			-password) password="$2" ; shift 2 ;;
+			*) shift 1 ;;
+		esac
+	done
+
+	if test -z "$name" -o -z "password"
+	then
+		echo 'you must provide a name and a password'
+		return 1
+	fi
+
+	if ! echo 'select user from mysql.user' | mariadb | grep "$name"
+	then
+		echo "CREATE USER $name IDENTIFIED BY '$password';" | mariadb
+	fi
+}
+
+cash.mariadb.database() {
+	while test "$#" -gt 0
+	do
+		case "$1" in
+			-name) name="$2" ; shift 2 ;;
+			-privileges) privileges="$2" ; shift 2 ;;
+			*) shift 1 ;;
+		esac
+	done
+
+	if test -z "$name"
+	then
+		echo 'you must provide a database name'
+		return 1
+	fi
+
+	if ! echo 'show databases' | mariadb | grep "$name"
+	then
+	    echo "CREATE DATABASE $name;" | mariadb
+	fi
+
+	if test -n "$privileges"
+	then
+	    echo 'GRANT ALL PRIVILEGES ON $name.* TO $privileges;' | mariadb
+	fi
 }

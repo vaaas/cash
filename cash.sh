@@ -164,6 +164,6 @@ cash.mariadb.database() {
 
 	if test -n "$privileges"
 	then
-	    echo 'GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;' | mariadb
+	    echo "GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;" | mariadb
 	fi
 }

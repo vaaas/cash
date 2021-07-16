@@ -137,7 +137,7 @@ cash.mariadb.user() {
 
 	if ! echo 'select user from mysql.user' | mariadb | grep "$name"
 	then
-		echo "CREATE USER $name IDENTIFIED BY '$password';" | mariadb
+		echo "CREATE USER $name@localhost IDENTIFIED BY '$password';" | mariadb
 	fi
 }
 
@@ -164,6 +164,6 @@ cash.mariadb.database() {
 
 	if test -n "$privileges"
 	then
-	    echo 'GRANT ALL PRIVILEGES ON $name.* TO $privileges;' | mariadb
+	    echo 'GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;' | mariadb
 	fi
 }

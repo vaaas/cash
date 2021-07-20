@@ -119,6 +119,20 @@ cash.pkg() {
 	done
 }
 
+cash.pecl() {
+	if test "$#" -eq 0
+	then
+		echo 'Please provide packages'
+		return 1
+	fi
+	pkgs="$(pecl list)"
+	while test "$#" -gt 0
+	do
+		echo "$pkgs" | grep "$1" || pecl install "$1"
+		shift 1
+	done
+}
+
 cash.mariadb.user() {
 	while test "$#" -gt 0
 	do

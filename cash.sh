@@ -190,3 +190,17 @@ cash.remove() {
 	fi
 	test -f "$1" && rm -v -- "$1"
 }
+
+cash.composer() {
+	if test -z "$1"
+	then pathname='/usr/local/bin/composer'
+	else pathname="$1"
+	fi
+
+	if ! test -e "$pathname"
+	then
+		curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+		php /tmp/composer-setup.php --install-dir="$(dirname $pathname)" --filename="$(basename $pathname)"
+		rm -vf /tmp/composer-setup.php
+	fi
+}

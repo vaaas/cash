@@ -114,7 +114,7 @@ cash.pkg() {
 	fi
 	while test "$#" -gt 0
 	do
-		dpkg -s "$1" | grep 'installed' || apt install "$1"
+		dpkg -s "$1" | grep 'installed' || apt-get install -y "$1"
 		shift 1
 	done
 }

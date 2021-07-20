@@ -62,7 +62,7 @@ cash.link() {
 		esac
 	done
 
-	if test -z "$name"
+	if test -z "$name" -o -z "$from"
 	then
 		echo 'You must provide: name, from'
 		return 1
@@ -159,11 +159,20 @@ cash.mariadb.database() {
 
 	if ! echo 'show databases' | mariadb | grep "$name"
 	then
-	    echo "CREATE DATABASE $name;" | mariadb
+		echo "CREATE DATABASE $name;" | mariadb
 	fi
 
 	if test -n "$privileges"
 	then
-	    echo "GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;" | mariadb
+		echo "GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;" | mariadb
 	fi
+}
+
+cash.remove {
+	if test -z "$1"
+	then
+		echo 'No file provided for deletion'
+		return 1
+	fi
+	test -f "$1" && rm -v -- "$1"
 }

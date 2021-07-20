@@ -168,7 +168,7 @@ cash.mariadb.database() {
 	fi
 }
 
-cash.remove {
+cash.remove() {
 	if test -z "$1"
 	then
 		echo 'No file provided for deletion'

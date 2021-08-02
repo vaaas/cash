@@ -112,10 +112,26 @@ cash.pkg() {
 		echo 'Please provide packages'
 		return 1
 	fi
+	if which apt-get
+	then cash.pkg.apt "$@"
+	elif which apk
+	then cash.pkg.apk "$@"
+	else
+		echo 'cannot determine system package manager'
+		exit 1
+	fi
+}
+
+cash.pkg.apt() {
 	while test "$#" -gt 0
-	do
-		dpkg -s "$1" | grep 'installed' || apt-get install -y "$1"
-		shift 1
+	do dpkg -s "$1" | grep 'installed' || apt-get install -y "$1" ; shift 1
+	done
+}
+
+cash.pkg.apk() {
+	info="$(apk info)"
+	while test "$#" -gt 0
+	do echo "$info" | grep "$1" || apk add "$1" ; shift 1
 	done
 }
 

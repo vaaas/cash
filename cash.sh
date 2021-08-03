@@ -3,7 +3,7 @@
 IFS='
 '
 
-cash.file() {
+cash_file() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -28,7 +28,7 @@ cash.file() {
 	test -n "$permissions" && chmod -c -- "$permissions" "$name"
 }
 
-cash.dir() {
+cash_dir() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -52,7 +52,7 @@ cash.dir() {
 	test -n "$permissions" && chmod -c -- "$permissions" "$name"
 }
 
-cash.link() {
+cash_link() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -71,7 +71,7 @@ cash.link() {
 	ln -s -f -v -- "$from" "$name"
 }
 
-cash.group() {
+cash_group() {
 	if test -z "$1"
 	then
 		echo 'Please provide a group name'
@@ -80,7 +80,7 @@ cash.group() {
 	getent group "$1" || groupadd "$1"
 }
 
-cash.user() {
+cash_user() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -106,36 +106,36 @@ cash.user() {
 	fi
 }
 
-cash.pkg() {
+cash_pkg() {
 	if test "$#" -eq 0
 	then
 		echo 'Please provide packages'
 		return 1
 	fi
 	if which apt-get
-	then cash.pkg.apt "$@"
+	then cash_pkg_apt "$@"
 	elif which apk
-	then cash.pkg.apk "$@"
+	then cash_pkg_apk "$@"
 	else
 		echo 'cannot determine system package manager'
 		exit 1
 	fi
 }
 
-cash.pkg.apt() {
+cash_pkg_apt() {
 	while test "$#" -gt 0
 	do dpkg -s "$1" | grep 'installed' || apt-get install -y "$1" ; shift 1
 	done
 }
 
-cash.pkg.apk() {
+cash_pkg_apk() {
 	info="$(apk info)"
 	while test "$#" -gt 0
 	do echo "$info" | grep "$1" || apk add "$1" ; shift 1
 	done
 }
 
-cash.pecl() {
+cash_pecl() {
 	if test "$#" -eq 0
 	then
 		echo 'Please provide packages'
@@ -149,7 +149,7 @@ cash.pecl() {
 	done
 }
 
-cash.mariadb.user() {
+cash_mariadb.user() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -171,7 +171,7 @@ cash.mariadb.user() {
 	fi
 }
 
-cash.mariadb.database() {
+cash_mariadb.database() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -198,7 +198,7 @@ cash.mariadb.database() {
 	fi
 }
 
-cash.remove() {
+cash_remove() {
 	if test -z "$1"
 	then
 		echo 'No file provided for deletion'
@@ -207,7 +207,7 @@ cash.remove() {
 	test -f "$1" && rm -v -- "$1"
 }
 
-cash.composer() {
+cash_composer() {
 	if test -z "$1"
 	then pathname='/usr/local/bin/composer'
 	else pathname="$1"

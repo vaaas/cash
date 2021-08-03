@@ -149,7 +149,7 @@ cash_pecl() {
 	done
 }
 
-cash_mariadb.user() {
+cash_mariadb_user() {
 	while test "$#" -gt 0
 	do
 		case "$1" in
@@ -171,7 +171,7 @@ cash_mariadb.user() {
 	fi
 }
 
-cash_mariadb.database() {
+cash_mariadb_database() {
 	while test "$#" -gt 0
 	do
 		case "$1" in

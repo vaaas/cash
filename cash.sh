@@ -243,7 +243,7 @@ cash_psql_database() {
 
 	if test -n "$privileges"
 	then
-		echo "GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;" | mariadb
+		echo "GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;" | sudo -u postgres psql
 	fi
 }
 

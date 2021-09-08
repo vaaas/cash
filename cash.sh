@@ -198,6 +198,55 @@ cash_mariadb_database() {
 	fi
 }
 
+cash_psql_user() {
+	while test "$#" -gt 0
+	do
+		case "$1" in
+			-name) name="$2" ; shift 2 ;;
+			-password) password="$2" ; shift 2 ;;
+			*) shift 1 ;;
+		esac
+	done
+
+	if test -z "$name" -o -z "password"
+	then
+		echo 'you must provide a name and a password'
+		return 1
+	fi
+
+	if ! echo 'select usename from pg_catalog.pg_user' | sudo -u postgres psql | grep "$name"
+	then
+		echo "CREATE USER $name WITH PASSWORD '$password';" | sudo -u postgres psql
+	fi
+}
+
+cash_psql_database() {
+	while test "$#" -gt 0
+	do
+		case "$1" in
+			-name) name="$2" ; shift 2 ;;
+			-privileges) privileges="$2" ; shift 2 ;;
+			*) shift 1 ;;
+		esac
+	done
+
+	if test -z "$name"
+	then
+		echo 'you must provide a database name'
+		return 1
+	fi
+
+	if ! echo 'select datname from pg_database;' | sudo -u postgres psql | grep "$name"
+	then
+		echo "CREATE DATABASE $name;" | sudo -u postgres psql
+	fi
+
+	if test -n "$privileges"
+	then
+		echo "GRANT ALL PRIVILEGES ON $name.* TO $privileges@localhost;" | mariadb
+	fi
+}
+
 cash_remove() {
 	if test -z "$1"
 	then

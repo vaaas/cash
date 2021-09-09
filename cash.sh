@@ -88,6 +88,7 @@ cash_user() {
 			-groups) groups="$2" ; shift 2 ;;
 			-password) password="$(openssl passwd -6 -salt xyz "$2")" ; shift 2 ;;
 			-home) home="$2" ; shift 2 ;;
+			-shell) shell="$2" ; shift 2 ;;
 			*) shift 1 ;;
 		esac
 	done
@@ -100,9 +101,9 @@ cash_user() {
 
 	if ! getent passwd "$name"
 	then
-		useradd -p "$password" -d "$home" -G "$groups" "$name"
+		useradd -p "$password" -d "$home" -G "$groups" -s "$shell" "$name"
 	else
-		usermod -p "$password" -m -d "$home" -G "$groups" "$name"
+		usermod -p "$password" -m -d "$home" -G "$groups" -s "$shell" "$name"
 	fi
 }
 
